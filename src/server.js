@@ -24,18 +24,21 @@ export const setupServer = async () => {
     res.send("It's work");
   });
 
+  app.use((req, res, next) => {
+    res.jsonFormatted = (data) => {
+      res.send(JSON.stringify(data, null, 2));
+    };
+    next();
+  });
+
   app.get('/contacts', async (req, res) => {
     try {
       const contacts = await getAllContacts();
-      res.status(200).send.JSON.stringify(
-        {
-          status: 200,
-          message: 'Successfully found contacts!',
-          data: contacts,
-        },
-        undefined,
-        2,
-      );
+      res.jsonFormatted({
+        status: 200,
+        message: 'Successfully found contacts!',
+        data: contacts,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -51,15 +54,11 @@ export const setupServer = async () => {
         return;
       }
 
-      res.status(200).send.JSON.stringify(
-        {
-          status: 200,
-          message: `Successfully found contact with id ${contactId}!`,
-          data: contact,
-        },
-        undefined,
-        2,
-      );
+      res.jsonFormatted({
+        status: 200,
+        message: `Successfully found contact with id ${contactId}!`,
+        data: contact,
+      });
     } catch (error) {
       console.error(error);
     }
