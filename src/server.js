@@ -24,17 +24,10 @@ export const setupServer = async () => {
     res.send("It's work");
   });
 
-  app.use((req, res, next) => {
-    res.jsonFormatted = (data) => {
-      res.send(JSON.stringify(data, null, 2));
-    };
-    next();
-  });
-
   app.get('/contacts', async (req, res) => {
     try {
       const contacts = await getAllContacts();
-      res.jsonFormatted({
+      res.status(200).json({
         status: 200,
         message: 'Successfully found contacts!',
         data: contacts,
@@ -54,7 +47,7 @@ export const setupServer = async () => {
         return;
       }
 
-      res.jsonFormatted({
+      res.status(200).json({
         status: 200,
         message: `Successfully found contact with id ${contactId}!`,
         data: contact,
