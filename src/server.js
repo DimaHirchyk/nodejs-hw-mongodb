@@ -15,9 +15,6 @@ export const setupServer = async () => {
     pino({
       transport: {
         target: 'pino-pretty',
-        options: {
-          destination: 1,
-        },
       },
     }),
   );
@@ -26,13 +23,13 @@ export const setupServer = async () => {
     res.send('Hello World!');
   });
 
-  app.use('*', (req, res, next) => {
+  app.use((req, res, next) => {
     res.status(404).json({
       message: 'Not found',
     });
   });
 
   app.listen(PORT, () => {
-    console.log('Server is running on port', PORT);
+    console.log(`Server is running on port ${PORT}`);
   });
 };
