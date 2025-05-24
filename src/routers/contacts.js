@@ -36,10 +36,6 @@ router.patch(
   ctrlWrapper(updateContactController),
 );
 
-router.delete(
-  '/contacts/:contactId',
-  validateBody(updateContactSchema),
-  ctrlWrapper(deleteContactController),
-);
+router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 
 export default router;
