@@ -44,8 +44,13 @@ export const getContactByIdController = async (req, res, next) => {
     data: contact,
   });
 };
+
 export const createContactController = async (req, res, next) => {
   const contact = await createContact(req.body);
+
+  if (!contact) {
+    throw createHttpError(400, 'перевірте запит');
+  }
 
   res.status(201).json({
     status: 201,
@@ -53,6 +58,7 @@ export const createContactController = async (req, res, next) => {
     data: contact,
   });
 };
+
 export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
