@@ -21,6 +21,7 @@ export const getAllContactsController = async (req, res, next) => {
     sortOrder,
     sortBy,
     filter,
+    ownerId: req.user.id,
   });
 
   res.status(200).json({
@@ -38,6 +39,10 @@ export const getContactByIdController = async (req, res, next) => {
     throw createHttpError(404, 'Contact not found');
   }
 
+  if (contact.ownerId.toString() !== req.user.id.toString()) {
+    throw createHttpError.NotFound('Student not found');
+  }
+
   res.status(200).json({
     status: 200,
     message: `Successfully found contact with id ${contactId}!`,
@@ -46,7 +51,7 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, next) => {
-  const contact = await createContact(req.body);
+  const contact = await createContact({ ...req.body, ownerId: req.user.id });
 
   if (!contact) {
     throw createHttpError(400, 'перевірте запит');

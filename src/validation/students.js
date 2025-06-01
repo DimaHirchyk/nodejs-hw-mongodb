@@ -35,6 +35,12 @@ export const createContactSchema = Joi.object({
       'any.only': ' Поле contactType має бути одним із: work, home, personal',
       'any.required': ' Поле contactType є обовʼязковим полем',
     }),
+  parentId: Joi.string().custom((value, helper) => {
+    if (value && !isValidObjectId(value)) {
+      return helper.message('Parent id should be a valid mongo id');
+    }
+    return true;
+  }),
 });
 
 export const updateContactSchema = Joi.object({
