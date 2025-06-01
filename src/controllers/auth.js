@@ -19,7 +19,7 @@ export const registerUserController = async (req, res) => {
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
 
-  res.cookie('refreshRoken', session.refreshToken, {
+  res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY),
   });
