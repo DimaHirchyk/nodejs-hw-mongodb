@@ -40,7 +40,7 @@ export const getContactByIdController = async (req, res, next) => {
     throw createHttpError(404, 'Contact not found');
   }
 
-  if (contact.ownerId.toString() !== req.user.id.toString()) {
+  if (contact.userId.toString() !== req.user.id.toString()) {
     throw createHttpError.NotFound('Student not found');
   }
 

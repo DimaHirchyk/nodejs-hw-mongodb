@@ -15,13 +15,9 @@ export const registerUser = async (payload) => {
   }
 
   payload.password = await bcrypt.hash(payload.password, 10);
-  try {
-    const registerUser = await UserCollection.create(payload);
-    return registerUser;
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw createHttpError(500, 'Database error');
-  }
+
+  const registerUser = await UserCollection.create(payload);
+  return registerUser;
 };
 
 export const loginUser = async (payload) => {
