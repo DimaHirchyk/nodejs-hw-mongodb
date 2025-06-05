@@ -65,6 +65,8 @@ export const updateContact = async (
     { new: true, includeResultMetadata: true, ...options },
   );
 
+  console.log('Update result:', result);
+
   if (!result || !result.value) return null;
 
   return {
