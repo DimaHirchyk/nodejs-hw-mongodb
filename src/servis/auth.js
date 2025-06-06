@@ -1,9 +1,21 @@
 import createHttpError from 'http-errors';
-import { UserCollection } from '../models/user.js';
+import Handlebars from 'handlebars';
 import bcrypt from 'bcrypt';
+import * as fs from 'node:fs';
+import path from 'node:path';
 import { randomBytes } from 'crypto';
+import jwt from 'jsonwebtoken';
+
+import { UserCollection } from '../models/user.js';
 import { SessionCollection } from '../models/session.js';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/index.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { sendMail } from '../utils/sendMail.js';
+
+const RESET_PASSWORD = fs.readFileSync(
+  path.resolve('src', 'templates', 'reset-password.hbs'),
+  'utf-8',
+);
 
 export const registerUser = async (payload) => {
   console.log('Payload in registerUser:', payload);
@@ -86,4 +98,29 @@ export const refreshUsersSession = async (sessionId, refreshToken) => {
     userId: session.userId,
     ...newSession,
   });
+};
+
+export const sendResetPassword = async (email) => {
+  const user = await UserCollection.findOne({ email });
+
+  if (user === null) throw createHttpError.NotFound('User not found!');
+
+  const html = Handlebars.compile(RESET_PASSWORD);
+  const token = jwt.sign(
+    {
+      sub: user._id,
+      name: user.name,
+    },
+    getEnvVar('JWT_SECRET'),
+    {
+      expiresIn: '15m',
+    },
+  );
+  sendMail(
+    user.email,
+    'Reset password',
+    html({
+      link: `http://localhost:8080/auth/send-reset-email/?token=${token}`,
+    }),
+  );
 };
