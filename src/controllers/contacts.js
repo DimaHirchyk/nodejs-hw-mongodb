@@ -72,7 +72,11 @@ export const createContactController = async (req, res, next) => {
     photo = `http://localhost:8080/photo/${req.file.filename}`;
   }
 
-  const contact = await createContact({ ...req.body, userId: req.user.id });
+  const contact = await createContact({
+    ...req.body,
+    userId: req.user.id,
+    photo,
+  });
 
   if (!contact) {
     throw createHttpError(400, 'перевірте запит');
