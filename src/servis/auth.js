@@ -120,7 +120,33 @@ export const sendResetPassword = async (email) => {
     user.email,
     'Reset password',
     html({
-      link: `http://localhost:8080/auth/send-reset-email/?token=${token}`,
+      link: ` ${getEnvVar('APP_DOMAIN')}/?token=${token}`,
     }),
   );
+};
+
+export const resetPassword = async (password, token) => {
+  try {
+    const decoder = jwt.verify(token, getEnvVar('JWT_SECRET'));
+
+    const user = await UserCollection.findById(decoder.sub);
+
+    if (user === null) throw createHttpError.NotFound('User not found!');
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    await UserCollection.findByIdAndUpdate(user._id, {
+      password: hashPassword,
+    });
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      throw new createHttpError.Unauthorized('Token is unauthorized');
+    }
+
+    if (error.name === 'TokenExpiredError') {
+      throw new createHttpError.Unauthorized('Token is expired or invalid.');
+    }
+
+    throw error;
+  }
 };

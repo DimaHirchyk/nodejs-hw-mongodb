@@ -6,11 +6,13 @@ import {
   logoutUserController,
   refreshSessionuserController,
   registerUserController,
+  resetPassworsController,
   sendResetPasswordController,
 } from '../controllers/auth.js';
 import {
   loginUserSchema,
   registerUserSchema,
+  resetPassworsSchema,
   sendResetPassword,
 } from '../validation/auth.js';
 
@@ -41,6 +43,13 @@ router.post(
   jsonParser,
   validateBody(sendResetPassword),
   ctrlWrapper(sendResetPasswordController),
+);
+
+router.post(
+  '/reset-pwd',
+  jsonParser,
+  validateBody(resetPassworsSchema),
+  ctrlWrapper(resetPassworsController),
 );
 
 export default router;
