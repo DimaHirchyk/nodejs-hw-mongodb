@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import createHttpError from 'http-errors';
 import {
   createContact,
@@ -9,6 +11,8 @@ import {
 import { parsePaginationParems } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { uploadCloudinary } from '../utils/uploudsCloud.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
 
 export const getAllContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationParems(req.query);
@@ -52,6 +56,22 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, next) => {
+  let photo = null;
+
+  if (getEnvVar('UPLOAD-CLOUDINARY') === 'true') {
+    const result = await uploadCloudinary(req.file.path);
+
+    await fs.unlink(req.file.path);
+
+    photo = result.secure_url;
+  } else {
+    await fs.rename(
+      req.file.path,
+      path.resolve('src', 'uploads', 'photo', req.file.filename),
+    );
+    photo = `http://localhost:8080/photo/${req.file.filename}`;
+  }
+
   const contact = await createContact({ ...req.body, userId: req.user.id });
 
   if (!contact) {
