@@ -55,27 +55,34 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res, next) => {
+const handleUploadImage = async (file) => {
+  if (!file) return null;
+
   let photo = null;
 
   if (getEnvVar('UPLOAD-CLOUDINARY') === 'true') {
-    const result = await uploadCloudinary(req.file.path);
+    const result = await uploadCloudinary(file.path);
 
-    await fs.unlink(req.file.path);
+    await fs.unlink(file.path);
 
     photo = result.secure_url;
   } else {
     await fs.rename(
-      req.file.path,
-      path.resolve('src', 'uploads', 'photo', req.file.filename),
+      file.path,
+      path.resolve('src', 'uploads', 'photo', file.filename),
     );
-    photo = `http://localhost:8080/photo/${req.file.filename}`;
+    photo = `http://localhost:8080/photo/${file.filename}`;
   }
+  return photo;
+};
+
+export const createContactController = async (req, res, next) => {
+  const photo = await handleUploadImage(req.file);
 
   const contact = await createContact({
     ...req.body,
     userId: req.user.id,
-    photo,
+    ...(photo && { photoUrl: photo }),
   });
 
   if (!contact) {
@@ -90,10 +97,17 @@ export const createContactController = async (req, res, next) => {
 };
 
 export const updateContactController = async (req, res, next) => {
+  const photo = await handleUploadImage(req.file);
+
+  const updatedData = {
+    ...req.body,
+    ...(photo && { photoUrl: photo }),
+  };
+
   const { contactId } = req.params;
   const { id: userId } = req.user;
 
-  const result = await updateContact(contactId, userId, req.body);
+  const result = await updateContact(contactId, userId, updatedData);
 
   if (!result) {
     throw createHttpError(404, 'Contact not found');
