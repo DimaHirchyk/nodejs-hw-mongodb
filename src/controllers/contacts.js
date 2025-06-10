@@ -101,8 +101,10 @@ export const updateContactController = async (req, res, next) => {
 
   const updatedData = {
     ...req.body,
-    ...(photo && { photoUrl: photo }),
+    ...(photo && { photo: photo }),
   };
+
+  console.log(photo);
 
   const { contactId } = req.params;
   const { id: userId } = req.user;
