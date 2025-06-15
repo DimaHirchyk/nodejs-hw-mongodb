@@ -17,8 +17,6 @@ const PORT = Number(getEnvVar('PORT', '8080'));
 export const setupServer = async () => {
   const app = express();
 
-  app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(SWAGGER_DOCS));
-
   app.use(
     '/avatars',
     express.static(path.resolve('src', 'uploads', 'avatars')),
@@ -31,6 +29,8 @@ export const setupServer = async () => {
   app.get('/', (req, res) => {
     res.send('Server is work');
   });
+
+  app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(SWAGGER_DOCS));
 
   app.use(router);
 

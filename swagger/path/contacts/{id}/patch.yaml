@@ -1,8 +1,8 @@
 tags:
   - Contact
-summary: Get contact by id
-operationId: getContacts
-description: Get contact by id
+summary: Update contacts
+operationId: updateContact
+description: Update contacts
 security:
   - bearerAuth: []
 parameters:
@@ -12,9 +12,14 @@ parameters:
     schema:
       type: string
       example: 6841738d9abba11274e4c270
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        $ref: ../../../conponents/schemas/contact.yaml
 responses:
   '200':
-    description: Get contact by id
+    description: Contact not update
     content:
       application/json:
         schema:
@@ -29,10 +34,28 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully get contact
+              example: Contact not update
             data:
               $ref: ../../../conponents/schemas/contact.yaml
-
+  '201':
+    description: Contact update
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Contact update
+            data:
+              $ref: ../../../conponents/schemas/contact.yaml
   '401':
     $ref: ../../../conponents/responses/401.yaml
 
