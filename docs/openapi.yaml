@@ -33,7 +33,7 @@ paths:
     post:
       $ref: ../swagger/path/auth/logout.yaml
 servers:
-  - url: http://127.0.0.1:8080
+  - url: https://hw7-swagger-08wu.onrender.com
 components:
   securitySchemes:
     bearerAuth:
