@@ -1,5 +1,5 @@
 tags:
-  - Contact
+  - Contacts
 summary: Update contacts
 operationId: updateContact
 description: Update contacts
@@ -17,53 +17,33 @@ requestBody:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - status
-          - message
-          - data
         properties:
-          status:
-            type: integer
-            example: 200
-          message:
+          name:
             type: string
-            example: Contact not update
-          data:
-            type: object
-            required:
-              - name
-              - phoneNumber
-              - email
-              - isFavourite
-              - contactType
-              - photo
-            properties:
-              name:
-                type: string
-                description: Contact name
-                example: Nejk dima
-              phoneNumber:
-                type: string
-                description: Phone contact
-                example: +3802341230
-              email:
-                type: string
-                description: Email contact
-                example: doe@mail.com
-              isFavourite:
-                type: boolean
-                description: Contact favourite
-                example: false
-              contactType:
-                type: string
-                description: Contact type
-                enum: ['work', 'home', 'personal']
-                example: personal
-              photo:
-                type: string
-                format: url
-                description: Contact photo url
-                example: https://res.cloudinary.com/df5xsxnzm/image/upload/v1749232498/jpolliyga4egrctz965w.jpg
+            description: Contact name
+            example: Nejk dima
+          phoneNumber:
+            type: string
+            description: Phone contact
+            example: +3802341230
+          email:
+            type: string
+            description: Email contact
+            example: doe@mail.com
+          isFavourite:
+            type: boolean
+            description: Contact favourite
+            example: false
+          contactType:
+            type: string
+            description: Contact type
+            enum: ['work', 'home', 'personal']
+            example: personal
+          photo:
+            type: string
+            format: url
+            description: Contact photo url
+            example: https://res.cloudinary.com/df5xsxnzm/image/upload/v1749232498/jpolliyga4egrctz965w.jpg
 
 responses:
   '200':
